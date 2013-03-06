@@ -1,0 +1,6 @@
+CppFuzz
+*.hi
+*.o
+*.swp
+*.swo
+*.swn
