@@ -4,4 +4,5 @@ import Control.Applicative
 import CPP.Chars
 
 main = do ident <- runFuzzer 42 randomIdent
-          print ident
+          punc <- runFuzzer 41 randomPunctuation
+          print (ident, punc)

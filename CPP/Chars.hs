@@ -64,7 +64,15 @@ identifierCharsNotFirst = [
     (0xFE20,0xFE2F)
   ]
 
+punctuation = words ("{ } [ ] # ## ( ) <: :> <% %> %: %:%: ; : ... new delete" ++
+    "? :: . .* + - * / % ^ & | ~ ! = < > += -= *= /= %= ^= &= |= " ++
+    "<< >> >>= <<= == != <= >= && || ++ -- , ->* -> " ++ 
+    "and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq <::")
+
+
 randomIdentifierChar = oneOf $ ['a'..'z'] ++ ['A'..'Z']
 
 randomIdent :: Fuzzer String
 randomIdent = replicateM 10 randomIdentifierChar
+
+randomPunctuation = oneOf punctuation
