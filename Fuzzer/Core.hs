@@ -2,25 +2,21 @@
 module Fuzzer.Core(
     Fuzzer,
     runFuzzer,
-    fuzzerGetRandom,
-    module System.Random
+    module System.Random,
+    module Control.Monad.Random.Class
 ) where
 
 import Control.Monad.State
+import Control.Monad.Random
+import Control.Monad.Random.Class
 import System.Random
 
 data FuzzerState = FuzzerState {
-    randomGen :: StdGen
+
 }
-newtype Fuzzer a = Fuzzer { unFuzzer :: StateT FuzzerState IO a } 
-    deriving (Monad, MonadState FuzzerState)
+newtype Fuzzer a = Fuzzer { unFuzzer :: StateT FuzzerState (RandT StdGen IO) a }
+    deriving (Monad, MonadState FuzzerState, MonadRandom)
 
 runFuzzer :: Int -> Fuzzer a -> IO a
-runFuzzer seed f = evalStateT (unFuzzer f) initialState
-    where initialState = FuzzerState { randomGen = mkStdGen seed }
-
-fuzzerGetRandom f = do
-    s0 <- gets randomGen
-    let (rv, s1) = f s0
-    modify (\st -> st { randomGen = s1 })
-    return rv
+runFuzzer seed f = evalRandT (evalStateT (unFuzzer f) initialState) (mkStdGen seed)
+    where initialState = FuzzerState { }
