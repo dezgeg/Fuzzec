@@ -1,4 +1,4 @@
-module Main where
+module Main(main) where
 import Fuzzer.Core
 import Control.Applicative
 import CPP.Chars

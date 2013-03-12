@@ -1,4 +1,5 @@
-CppFuzz
+cppfuzz
+dist/
 *.hi
 *.o
 *.swp

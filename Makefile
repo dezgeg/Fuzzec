@@ -1,7 +1,7 @@
 .PHONY: all clean
 
 all:
-	ghc --make Main.hs -o CppFuzz
+	cabal build
 
 clean:
 	@find . -iname '*.hi' -print0 | xargs -0 rm -v

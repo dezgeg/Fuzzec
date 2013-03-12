@@ -1,0 +1,15 @@
+Name:                Fuzzec
+Version:             0.0
+Description:         Haskell fuzzing libraries
+Author:              Tuomas Tynkkynen
+Maintainer:          dezgeg@gmail.com
+Build-Type:          Simple
+Cabal-Version:       >=1.2
+
+Executable cppfuzz
+  Main-is:           Main.hs
+  Build-Depends:     base >= 3 && < 5,
+                     MissingH >= 1.1.1.0,
+                     MonadRandom >= 0.1.6,
+                     random >= 1.0.1.1,
+                     mtl >= 2.0.1.0
