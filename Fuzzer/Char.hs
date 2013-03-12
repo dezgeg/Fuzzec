@@ -17,18 +17,19 @@ module Fuzzer.Char(
     angles,
     commaSep,
     semiEndBy,
-    noneOf
+    noneOf,
+    eitherCased
 ) where
 
 import Fuzzer.Core
 import Fuzzer.Combinators
 import Control.Monad
 import Control.Applicative
-import Data.Char (chr)
+import Data.Char (chr, toUpper, toLower)
 
 char :: Char -> Fuzzer String
 char c      = return [c]
-anyChar     = chance 0.8 alphaNum (chr <$> getRandomR (0, 0x10FFFF))
+anyChar     = chance 0.9 alphaNum (chr <$> getRandomR (0, 0x10FFFF))
 
 space :: Fuzzer String
 space       = oneOf " \r\t\v\f" >>= char
@@ -55,3 +56,5 @@ noneOf cs   = do c <- anyChar
                  if c `elem` cs
                     then noneOf cs
                     else return c
+
+eitherCased xs = chance 0.5 (return toUpper) (return toLower) >>= \f -> return $ map f xs
