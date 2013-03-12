@@ -1,8 +1,13 @@
+{-# LANGUAGE NoMonomorphismRestriction #-}
 module CPP.Chars where
 import Fuzzer.Core
+import Fuzzer.Char
 import Fuzzer.Combinators
 import Control.Monad
 import Control.Applicative
+
+import Numeric (showIntAtBase)
+import Data.Char (intToDigit)
 
 identifierChars = [
     (0x30,0x39),
@@ -69,10 +74,21 @@ punctuation = words ("{ } [ ] # ## ( ) <: :> <% %> %: %:%: ; : ... new delete" +
     "<< >> >>= <<= == != <= >= && || ++ -- , ->* -> " ++ 
     "and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq <::")
 
-
 randomIdentifierChar = oneOf $ ['a'..'z'] ++ ['A'..'Z']
 
 randomIdent :: Fuzzer String
 randomIdent = replicateM 10 randomIdentifierChar
 
 randomPunctuation = oneOf punctuation
+
+randomChar = randomStringOrChar '\''
+randomString = randomStringOrChar '"'
+
+randomStringOrChar :: Char -> Fuzzer String
+randomStringOrChar delim = (++[delim]) <$> ([delim]++) <$> concat <$> replicateM 40 content
+    where content = chance 0.1 escapeSeq ((:[]) <$> noneOf (delim:"\\"))
+          escapeSeq = ('\\':) <$> choice [
+            (:[]) <$> oneOf "abfnrt",
+            ('x':) <$> replicateM 2 hexDigit,
+            getRandomR (0, 255) >>= \byte -> return $ showIntAtBase 8 intToDigit (byte :: Int) ""
+           ]
